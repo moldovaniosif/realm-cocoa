@@ -67,19 +67,19 @@ class SwiftOptionalObject: Object {
     @objc dynamic var optStringCol: String?
     @objc dynamic var optBinaryCol: Data?
     @objc dynamic var optDateCol: Date?
-    let optIntCol = RealmOptional<Int>()
-    let optInt8Col = RealmOptional<Int8>()
-    let optInt16Col = RealmOptional<Int16>()
-    let optInt32Col = RealmOptional<Int32>()
-    let optInt64Col = RealmOptional<Int64>()
-    let optFloatCol = RealmOptional<Float>()
-    let optDoubleCol = RealmOptional<Double>()
-    let optBoolCol = RealmOptional<Bool>()
-    @objc dynamic var optObjectCol: SwiftBoolObject?
+    @RealmOptional var optIntCol: Int? = nil
+    @RealmOptional var optInt8Col: Int8? = nil
+    @RealmOptional var optInt16Col: Int16? = nil
+    @RealmOptional var optInt32Col: Int32? = nil
+    @RealmOptional var optInt64Col: Int64? = nil
+    @RealmOptional var optFloatCol: Float? = nil
+    @RealmOptional var optDoubleCol: Double? = nil
+    @RealmOptional var optBoolCol: Bool? = nil
+    @objc dynamic var optObjectCol: SwiftBoolObject? = nil
 }
 
 class SwiftOptionalPrimaryObject: SwiftOptionalObject {
-    let id = RealmOptional<Int>()
+    @RealmOptional var id: Int? = nil
 
     override class func primaryKey() -> String? { return "id" }
 }
@@ -299,7 +299,7 @@ class SwiftPrimaryIntObject: Object, SwiftPrimaryKeyObjectType {
 
 class SwiftPrimaryOptionalIntObject: Object, SwiftPrimaryKeyObjectType {
     @objc dynamic var stringCol = ""
-    let intCol = RealmOptional<Int>()
+    @RealmOptional var intCol: Int? = nil
 
     typealias PrimaryKey = RealmOptional<Int>
     override class func primaryKey() -> String? {
@@ -319,7 +319,7 @@ class SwiftPrimaryInt8Object: Object, SwiftPrimaryKeyObjectType {
 
 class SwiftPrimaryOptionalInt8Object: Object, SwiftPrimaryKeyObjectType {
     @objc dynamic var stringCol = ""
-    let int8Col = RealmOptional<Int8>()
+    @RealmOptional var int8Col: Int8? = nil
 
     typealias PrimaryKey = RealmOptional<Int8>
     override class func primaryKey() -> String? {
@@ -339,7 +339,7 @@ class SwiftPrimaryInt16Object: Object, SwiftPrimaryKeyObjectType {
 
 class SwiftPrimaryOptionalInt16Object: Object, SwiftPrimaryKeyObjectType {
     @objc dynamic var stringCol = ""
-    let int16Col = RealmOptional<Int16>()
+    @RealmOptional var int16Col: Int16? = nil
 
     typealias PrimaryKey = RealmOptional<Int16>
     override class func primaryKey() -> String? {
@@ -359,7 +359,7 @@ class SwiftPrimaryInt32Object: Object, SwiftPrimaryKeyObjectType {
 
 class SwiftPrimaryOptionalInt32Object: Object, SwiftPrimaryKeyObjectType {
     @objc dynamic var stringCol = ""
-    let int32Col = RealmOptional<Int32>()
+    @RealmOptional var int32Col: Int32? = nil
 
     typealias PrimaryKey = RealmOptional<Int32>
     override class func primaryKey() -> String? {
@@ -379,7 +379,7 @@ class SwiftPrimaryInt64Object: Object, SwiftPrimaryKeyObjectType {
 
 class SwiftPrimaryOptionalInt64Object: Object, SwiftPrimaryKeyObjectType {
     @objc dynamic var stringCol = ""
-    let int64Col = RealmOptional<Int64>()
+    @RealmOptional var int64Col: Int64? = nil
 
     typealias PrimaryKey = RealmOptional<Int64>
     override class func primaryKey() -> String? {
@@ -408,16 +408,16 @@ class SwiftIndexedPropertiesObject: Object {
 
 class SwiftIndexedOptionalPropertiesObject: Object {
     @objc dynamic var optionalStringCol: String? = ""
-    let optionalIntCol = RealmOptional<Int>()
-    let optionalInt8Col = RealmOptional<Int8>()
-    let optionalInt16Col = RealmOptional<Int16>()
-    let optionalInt32Col = RealmOptional<Int32>()
-    let optionalInt64Col = RealmOptional<Int64>()
-    let optionalBoolCol = RealmOptional<Bool>()
+    @RealmOptional var optionalIntCol: Int? = nil
+    @RealmOptional var optionalInt8Col: Int8? = nil
+    @RealmOptional var optionalInt16Col: Int16? = nil
+    @RealmOptional var optionalInt32Col: Int32? = nil
+    @RealmOptional var optionalInt64Col: Int64? = nil
+    @RealmOptional var optionalBoolCol: Bool? = nil
     @objc dynamic var optionalDateCol: Date? = Date()
 
-    let optionalFloatCol = RealmOptional<Float>()
-    let optionalDoubleCol = RealmOptional<Double>()
+    @RealmOptional var optionalFloatCol: Float? = nil
+    @RealmOptional var optionalDoubleCol: Double? = nil
     @objc dynamic var optionalDataCol: Data? = Data()
 
     override class func indexedProperties() -> [String] {
@@ -535,13 +535,13 @@ class SwiftGenericPropsOrderingObject: SwiftGenericPropsOrderingParent {
     override class func ignoredProperties() -> [String] {
         return ["firstIgnored", "dynamicIgnored", "secondIgnored", "thirdIgnored", "lazyIgnored", "dynamicLazyIgnored"]
     }
-    let firstOptionalNumber = RealmOptional<Int>()      // Managed property
+    @RealmOptional var firstOptionalNumber: Int? = nil      // Managed property
     var thirdIgnored = 999
     @objc dynamic lazy var dynamicLazyIgnored = 999
     let firstLinking = LinkingObjects(fromType: SwiftGenericPropsOrderingHelper.self, property: "first")
     let secondLinking = LinkingObjects(fromType: SwiftGenericPropsOrderingHelper.self, property: "second")
     @objc dynamic var thirdNumber = 0                   // Managed property
-    let secondOptionalNumber = RealmOptional<Int>()     // Managed property
+    @RealmOptional var secondOptionalNumber: Int? = nil     // Managed property
 }
 
 // Only exists to allow linking object properties on `SwiftGenericPropsNotLastObject`.

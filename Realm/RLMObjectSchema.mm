@@ -270,21 +270,28 @@ const Ivar RLMDummySwiftIvar = []() {
     // generic properties into the correct place
     NSUInteger nextIndex = 0;
     for (RLMSwiftPropertyMetadata *md in props) {
+        // Property wrappers prefix the name of the backing property (which is
+        // what we actually discover) with $
+        NSString *propertyName = md.propertyName;
+        if ([propertyName hasPrefix:@"$"]) {
+            propertyName = [propertyName substringFromIndex:1];
+        }
+
         // In theory existing should only ever be nextIndex or NSNotFound, and
         // this search is just a waste of time.
         // FIXME: verify if this is actually true
         NSUInteger existing = [propArray indexOfObjectPassingTest:^(RLMProperty *obj, NSUInteger, BOOL *) {
-            return [obj.name isEqualToString:md.propertyName];
+            return [obj.name isEqualToString:propertyName];
         }];
 
         RLMProperty *prop;
         switch (md.kind) {
             case RLMSwiftPropertyKindList: // List<>
-                prop = [[RLMProperty alloc] initSwiftListPropertyWithName:md.propertyName instance:instance];
+                prop = [[RLMProperty alloc] initSwiftListPropertyWithName:propertyName instance:instance];
                 break;
             case RLMSwiftPropertyKindLinkingObjects: { // LinkingObjects<>
-                Ivar ivar = class_getInstanceVariable([instance class], md.propertyName.UTF8String);
-                prop = [[RLMProperty alloc] initSwiftLinkingObjectsPropertyWithName:md.propertyName
+                Ivar ivar = class_getInstanceVariable([instance class], propertyName.UTF8String);
+                prop = [[RLMProperty alloc] initSwiftLinkingObjectsPropertyWithName:propertyName
                                                                                ivar:ivar
                                                                     objectClassName:md.className
                                                              linkOriginPropertyName:md.linkedPropertyName];
@@ -307,11 +314,11 @@ const Ivar RLMDummySwiftIvar = []() {
                 }
                 else {
                     // RealmOptional<>
+                    // Use $ prefixed name to get the ivar
                     ivar = class_getInstanceVariable([instance class], md.propertyName.UTF8String);
                 }
-
-                prop = [[RLMProperty alloc] initSwiftOptionalPropertyWithName:md.propertyName
-                                                                      indexed:[indexed containsObject:md.propertyName]
+                prop = [[RLMProperty alloc] initSwiftOptionalPropertyWithName:propertyName
+                                                                      indexed:[indexed containsObject:propertyName]
                                                                          ivar:ivar
                                                                  propertyType:md.propertyType];
                 break;
