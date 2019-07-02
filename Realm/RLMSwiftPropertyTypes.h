@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2014 Realm Inc.
+// Copyright 2019 Realm Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,22 +16,23 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import "RLMObjectSchema_Private.h"
-//@import ObjectiveC.runtime;
+// These macros are formatted oddly to preserve the newlines in the
+// preprocessed output, for the sake of the Swift file produced.
 
-namespace realm {
-    class ObjectSchema;
-}
-@class RLMSchema;
+#define REALM_FOR_EACH_SWIFT_PRIMITIVE_TYPE(macro) /*
+*/    macro(bool, Bool, bool) /*
+*/    macro(double, Double, double) /*
+*/    macro(float, Float, float) /*
+*/    macro(int64_t, Int64, int)
 
-@interface RLMObjectSchema ()
-// create realm::ObjectSchema copy
-- (realm::ObjectSchema)objectStoreCopy:(RLMSchema *)schema;
+#define REALM_FOR_EACH_SWIFT_INT_SIZE(macro) /*
+*/    macro(int8_t, Int8, int) /*
+*/    macro(int16_t, Int16, int) /*
+*/    macro(int32_t, Int32, int) /*
+*/    macro(NSInteger, Int, int)
 
-// initialize with realm::ObjectSchema
-+ (instancetype)objectSchemaForObjectStoreSchema:(realm::ObjectSchema const&)objectSchema;
-@end
+#define REALM_FOR_EACH_SWIFT_OBJECT_TYPE(macro) /*
+*/    macro(NSString, String, string) /*
+*/    macro(NSDate, Date, date) /*
+*/    macro(NSData, Data, data)
 
-// An objc_ivar pointer which is guaranteed to not point to any actually-existing
-// ivar. Used as part of https://github.com/realm/realm-cocoa/issues/5784
-extern const Ivar RLMDummySwiftIvar;

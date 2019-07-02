@@ -20,7 +20,7 @@
 
 #import "RLMAccessor.hpp"
 #import "RLMObject_Private.hpp"
-#import "RLMProperty.h"
+#import "RLMProperty_Private.hpp"
 #import "RLMUtil.hpp"
 #import "object.hpp"
 
@@ -161,3 +161,30 @@ void RLMInitializeUnmanagedOptional(__unsafe_unretained RLMOptionalBase *const s
     static_cast<UnmanagedOptional&>(*self->_impl).attach(parent, prop.name);
 }
 @end
+
+struct SwiftAccess {
+    __unsafe_unretained RLMObjectBase *obj;
+    size_t index;
+
+    SwiftAccess(const uint32_t *key) {
+        ptrdiff_t offset = *key;
+        void *ptr = static_cast<void *>(const_cast<char *>(reinterpret_cast<const char *>(key)) - offset);
+        index = reinterpret_cast<const void *const*>(key) - reinterpret_cast<const void **>(ptr);
+        obj = (__bridge RLMObjectBase *)ptr;
+    }
+};
+
+int RLMGetSwiftProperty(RLMObjectBase *obj, uint16_t key) {
+    return obj->_row.get_int(obj->_info->objectSchema->persisted_properties[key].table_column);
+}
+
+void RLMSetSwiftProperty(RLMObjectBase *obj, uint16_t key, int value) {
+    obj->_row.set_int(obj->_info->objectSchema->persisted_properties[key].table_column, value);
+}
+
+void RLMInitSwiftProperty(RLMOptionalBase *obj, RLMProperty *prop) {
+    void *objPtr = (__bridge void *)obj;
+    ptrdiff_t offset = reinterpret_cast<uintptr_t>(prop.swiftIvar);
+    uint64_t *key = reinterpret_cast<uint64_t *>(static_cast<char *>(objPtr) + offset);
+    *key = reinterpret_cast<uintptr_t>(prop.swiftIvar);
+}

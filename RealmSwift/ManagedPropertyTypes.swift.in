@@ -1,0 +1,91 @@
+////////////////////////////////////////////////////////////////////////////
+//
+// Copyright 2019 Realm Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////
+
+#include "RLMSwiftPropertyTypes.h"
+
+import Realm
+import Realm.Private
+
+// clang -x c -E -CC -P -I Realm RealmSwift/ManagedPropertyTypes.swift.in >! RealmSwift/ManagedPropertyTypes.swift
+
+#define REALM_VALUE_EXTENSION(objc, swift, rlmtype) /*
+   */ extension swift { /*
+       */ @inlinable /*
+       */ public static func _rlmSetProperty(_ obj: Object, _ key: UInt16, _ value: swift) { /*
+           */ RLMSetSwiftProperty##swift(obj, key, value) /*
+       */ } /*
+       */ @inlinable public static var _type: PropertyType { .rlmtype } /*
+       */ @inlinable public static var _optional: Bool { false } /*
+   */ }
+REALM_FOR_EACH_SWIFT_PRIMITIVE_TYPE(REALM_VALUE_EXTENSION)
+REALM_FOR_EACH_SWIFT_OBJECT_TYPE(REALM_VALUE_EXTENSION)
+#undef REALM_VALUE_EXTENSION
+
+#define REALM_VALUE_EXTENSION(objc, swift, rlmtype) /*
+ */ extension swift: RealmValue { /*
+     */ @inlinable /*
+     */ public static func _rlmGetProperty(_ obj: Object, _ key: UInt16) -> swift { /*
+         */ return RLMGetSwiftProperty##swift(obj, key) /*
+     */ } /*
+     */ @inlinable /*
+     */ public static func _rlmGetPropertyOptional(_ obj: Object, _ key: UInt16) -> swift? { /*
+         */ var gotValue = false /*
+         */ let ret = RLMGetSwiftProperty##swift##Optional(obj, key, &gotValue) /*
+         */ return gotValue ? ret : nil /*
+     */ } /*
+ */ }
+
+REALM_FOR_EACH_SWIFT_PRIMITIVE_TYPE(REALM_VALUE_EXTENSION)
+#undef REALM_VALUE_EXTENSION
+
+#define REALM_VALUE_EXTENSION(objc, swift, rlmtype) /*
+ */ extension swift: RealmValue { /*
+     */ @inlinable /*
+     */ public static func _rlmGetProperty(_ obj: Object, _ key: UInt16) -> swift { /*
+         */ return RLMGetSwiftProperty##swift(obj, key)! /*
+     */ } /*
+     */ @inlinable /*
+     */ public static func _rlmGetPropertyOptional(_ obj: Object, _ key: UInt16) -> swift? { /*
+         */ return RLMGetSwiftProperty##swift(obj, key) /*
+     */ } /*
+ */ }
+
+REALM_FOR_EACH_SWIFT_OBJECT_TYPE(REALM_VALUE_EXTENSION)
+#undef REALM_VALUE_EXTENSION
+
+#define REALM_VALUE_EXTENSION(objc, swift, rlmtype) /*
+ */ extension swift: RealmValue { /*
+     */ @inlinable /*
+     */ public static func _rlmSetProperty(_ obj: Object, _ key: UInt16, _ value: swift) { /*
+         */ RLMSetSwiftPropertyInt64(obj, key, Int64(value)) /*
+     */ } /*
+     */ @inlinable /*
+     */ public static func _rlmGetProperty(_ obj: Object, _ key: UInt16) -> swift { /*
+         */ return swift(Int64._rlmGetProperty(obj, key)) /*
+     */ } /*
+     */ @inlinable /*
+     */ public static func _rlmGetPropertyOptional(_ obj: Object, _ key: UInt16) -> swift? { /*
+         */ return Int64._rlmGetPropertyOptional(obj, key).map(swift.init) /*
+     */ } /*
+     */ @inlinable public static var _type: PropertyType { .int } /*
+     */ @inlinable public static var _optional: Bool { false } /*
+ */ }
+
+REALM_FOR_EACH_SWIFT_INT_SIZE(REALM_VALUE_EXTENSION)
+#undef REALM_VALUE_EXTENSION
+

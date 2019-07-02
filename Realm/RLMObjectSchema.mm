@@ -273,7 +273,7 @@ const Ivar RLMDummySwiftIvar = []() {
         // Property wrappers prefix the name of the backing property (which is
         // what we actually discover) with $
         NSString *propertyName = md.propertyName;
-        if ([propertyName hasPrefix:@"$"]) {
+        if ([propertyName hasPrefix:@"$"] || [propertyName hasPrefix:@"_"]) {
             propertyName = [propertyName substringFromIndex:1];
         }
 
@@ -349,6 +349,19 @@ const Ivar RLMDummySwiftIvar = []() {
                     propArray[existing].optional = false;
                 }
                 break;
+            case RLMSwiftPropertyKindManagedProperty: {
+                NSLog(@"%@", propertyName);
+                Ivar ivar = class_getInstanceVariable([instance class],
+                                                      [@"_" stringByAppendingString: propertyName].UTF8String);
+                prop = [[RLMProperty alloc] initSwiftPropertyWithName:propertyName
+                                                              indexed:[indexed containsObject:propertyName]
+                                                                 type:md.propertyType
+                                                             optional:md.optional
+                                                            className:md.className
+                                                                 ivar:ivar];
+                prop.swiftAccessor = md.propertyAccessor;
+                break;
+            }
         }
 
         if (prop) {

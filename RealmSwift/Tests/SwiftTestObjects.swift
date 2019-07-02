@@ -62,6 +62,18 @@ class SwiftObject: Object {
     }
 }
 
+class SwiftPropertyObject: Object {
+    @ManagedProperty var boolCol = false
+    @ManagedProperty var intCol = 123
+    @ManagedProperty var floatCol = 1.23 as Float
+    @ManagedProperty var doubleCol = 12.3
+    @ManagedProperty var stringCol = "a"
+    @ManagedProperty var binaryCol = "a".data(using: String.Encoding.utf8)!
+    @ManagedProperty var dateCol = Date(timeIntervalSince1970: 1)
+    @ManagedProperty var objectCol: SwiftBoolObject? = nil
+    @ManagedProperty var arrayCol = List<SwiftBoolObject>()
+}
+
 class SwiftOptionalObject: Object {
     @objc dynamic var optNSStringCol: NSString?
     @objc dynamic var optStringCol: String?
@@ -82,6 +94,11 @@ class SwiftOptionalPrimaryObject: SwiftOptionalObject {
     @RealmOptional var id: Int? = nil
 
     override class func primaryKey() -> String? { return "id" }
+}
+
+class ManagedPropertyWrapper: Object {
+    @ManagedProperty(wrappedValue: 0, primaryKey: true)
+    var value: Int
 }
 
 class SwiftListObject: Object {

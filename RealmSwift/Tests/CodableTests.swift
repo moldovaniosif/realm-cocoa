@@ -84,6 +84,22 @@ class CodableTests: TestCase {
     }
 
     func testBool() {
+        let o = ManagedPropertyWrapper()
+        o.value = 2
+        XCTAssertEqual(o.value, 2)
+
+        let realm = try! Realm()
+        try! realm.write {
+            realm.add(o)
+            XCTAssertEqual(o.value, 2)
+        }
+        XCTAssertEqual(o.value, 2)
+        try! realm.write {
+            realm.create(ManagedPropertyWrapper.self, value: [3])
+        }
+        print("\(realm.objects(ManagedPropertyWrapper.self).last!.value)")
+        XCTAssertEqual(realm.objects(ManagedPropertyWrapper.self).last!.value, 3)
+
         XCTAssertEqual(true, decode(Bool.self, "[true]").value)
         XCTAssertNil(decode(Bool.self, "[null]").value)
         XCTAssertEqual(encode(true), "[true]")

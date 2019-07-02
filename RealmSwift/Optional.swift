@@ -73,7 +73,7 @@ public final class RealmOptional<Value: RealmOptionalType>: RLMOptionalBase {
         self.value = value
     }
 
-    public init(initialValue value: Value? = nil) {
+    public init(wrappedValue value: Value? = nil) {
         super.init()
         self.value = value
     }

@@ -497,8 +497,11 @@ public class ObjectUtil: NSObject {
         }
         let mirror = Mirror(reflecting: child.value)
         let type = mirror.subjectType
+        print("getOptionalPropertyMetadata: \(name) \(mirror) \(type)")
         let code: PropertyType
-        if type is Optional<String>.Type || type is Optional<NSString>.Type {
+        if let type = type as? _ManagedPropertyProtocol {
+            code = type._type
+        } else if type is Optional<String>.Type || type is Optional<NSString>.Type {
             code = .string
         } else if type is Optional<Date>.Type {
             code = .date
@@ -531,7 +534,12 @@ public class ObjectUtil: NSObject {
 
     @objc private class func getSwiftProperties(_ object: Any) -> [RLMSwiftPropertyMetadata] {
         return getNonIgnoredMirrorChildren(for: object).enumerated().map { idx, prop in
-            if let value = prop.value as? LinkingObjectsBase {
+            if let value = prop.value as? _ManagedPropertyProtocol {
+                let ret = RLMSwiftPropertyMetadata(forManagedProperty: prop.label!, type: value._type,
+                                                   optional: value._optional, accessor: value._accessor)
+                ret.className = value._className
+                return ret
+            } else if let value = prop.value as? LinkingObjectsBase {
                 return RLMSwiftPropertyMetadata(forLinkingObjectsProperty: prop.label!,
                                                 className: value.objectClassName,
                                                 linkedPropertyName: value.propertyName)

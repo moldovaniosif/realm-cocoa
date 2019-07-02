@@ -506,6 +506,17 @@ Class RLMObjectUtilClass(BOOL isSwift) {
     return md;
 }
 
++ (instancetype)metadataForManagedProperty:(NSString *)propertyName type:(RLMPropertyType)type
+                                  optional:(bool)optional accessor:(Class)accessor {
+    RLMSwiftPropertyMetadata *md = [RLMSwiftPropertyMetadata new];
+    md.propertyName = propertyName;
+    md.propertyType = type;
+    md.optional = optional;
+    md.kind = RLMSwiftPropertyKindManagedProperty;
+    md.propertyAccessor = accessor;
+    return md;
+}
+
 + (instancetype)metadataForListProperty:(NSString *)propertyName {
     RLMSwiftPropertyMetadata *md = [RLMSwiftPropertyMetadata new];
     md.propertyName = propertyName;

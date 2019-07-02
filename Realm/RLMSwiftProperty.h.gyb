@@ -1,0 +1,86 @@
+////////////////////////////////////////////////////////////////////////////
+//
+// Copyright 2019 Realm Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////
+
+#import <Foundation/Foundation.h>
+#import <stdint.h>
+
+@class RLMObjectBase;
+
+%{
+primitive_types = [
+    ('bool', 'Bool'),
+    ('float', 'Float'),
+    ('double', 'Double'),
+    ('int64_t', 'Int'),
+]
+object_types = [
+    ('NSString', 'String'),
+    ('NSData', 'Data'),
+    ('NSDate', 'Date'),
+]
+}%
+
+% for (objc, swift) in primitive_types:
+${objc} RLMGetSwiftProperty${swift}(RLMObjectBase *, uint16_t);
+${objc} RLMGetSwiftProperty${swift}Optional(RLMObjectBase *, uint16_t, bool *);
+void RLMSetSwiftProperty${swift}(RLMObjectBase *, uint16_t, ${objc});
+
+%end
+% for (objc, swift) in object_types:
+${objc} *RLMGetSwiftProperty${swift}(RLMObjectBase *, uint16_t);
+void RLMSetSwiftProperty${swift}(RLMObjectBase *, uint16_t, ${objc} *);
+
+%end
+
+#ifdef REALM_SWIFT_PROPERTY_IMPL
+#import "RLMObject_Private.hpp"
+
+template<typename T>
+T getOptional(__unsafe_unretained RLMObjectBase *const obj, uint16_t key, bool *gotValue) {
+    auto ret = get<util::Optional<T>>(obj, key);
+    if (ret) {
+        *gotValue = true;
+    }
+    return ret.value_or(0);
+}
+
+extern "C" {
+% for (objc, swift) in primitive_types:
+${objc} RLMGetSwiftProperty${swift}(__unsafe_unretained RLMObjectBase *const obj, uint16_t key) {
+    return get<${objc}>(obj, key);
+}
+
+${objc} RLMGetSwiftProperty${swift}Optional(__unsafe_unretained RLMObjectBase *const obj, uint16_t key, bool *gotValue) {
+    return getOptional<${objc}>(obj, key, gotValue);
+}
+
+void RLMSetSwiftProperty${swift}(__unsafe_unretained RLMObjectBase *const obj, uint16_t key, ${objc} value) {
+    RLMVerifyAttached(obj);
+    try {
+        obj->_row.set(obj->_info->objectSchema->persisted_properties[key].table_column, value);
+    }
+    catch (std::exception const& e) {
+        @throw RLMException(e);
+    }
+}
+
+% end
+}
+
+#endif
+

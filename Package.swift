@@ -102,30 +102,18 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "RealmTests",
-            dependencies: ["Realm", "RealmTestSupport"],
-            path: "Realm/Tests",
-            exclude: [
-                "Swift",
-                "TestHost",
-                "PrimitiveArrayPropertyTests.tpl.m",
-            ],
-            cxxSettings: cxxSettings + [
-                .headerSearchPath("Realm"),
-                .headerSearchPath(".."),
-                .headerSearchPath("../ObjectStore/src"),
-            ]
-        ),
-        .testTarget(
-            name: "RealmObjcSwiftTests",
-            dependencies: ["Realm", "RealmTestSupport"],
-            path: "Realm/Tests/Swift"
-        ),
-        .testTarget(
             name: "RealmSwiftTests",
             dependencies: ["RealmSwift", "RealmTestSupport"],
             path: "RealmSwift/Tests",
-            exclude: ["TestUtils.mm"]
+            exclude: [
+                "TestUtils.mm",
+                "ListTests.swift",
+                "ObjectTests.swift",
+                "PrimitiveListTests.swift",
+                "ObjectSchemaInitializationTests.swift",
+                "ObjectAccessorTests.swift",
+                "MigrationTests.swift",
+            ]
         )
     ],
     cxxLanguageStandard: .cxx14

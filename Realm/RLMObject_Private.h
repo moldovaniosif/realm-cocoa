@@ -119,16 +119,25 @@ typedef NS_ENUM(NSUInteger, RLMSwiftPropertyKind) {
     RLMSwiftPropertyKindOptional,
     RLMSwiftPropertyKindNilLiteralOptional,   // For Swift optional properties that reflect as nil
     RLMSwiftPropertyKindOther,
+    RLMSwiftPropertyKindManagedProperty,
 };
 
 // Metadata that describes a Swift generic property.
 @interface RLMSwiftPropertyMetadata : NSObject
 
 @property (nonatomic, strong) NSString *propertyName;
+@property (nonatomic) RLMPropertyType propertyType;
+@property (nonatomic) bool optional;
+
 @property (nullable, nonatomic, strong) NSString *className;
 @property (nullable, nonatomic, strong) NSString *linkedPropertyName;
-@property (nonatomic) RLMPropertyType propertyType;
 @property (nonatomic) RLMSwiftPropertyKind kind;
+@property (nonatomic) Class propertyAccessor;
+
++ (instancetype)metadataForManagedProperty:(NSString *)propertyName
+                                      type:(RLMPropertyType)type
+                                  optional:(bool)optional
+                                  accessor:(Class)accessor;
 
 + (instancetype)metadataForOtherProperty:(NSString *)propertyName;
 
@@ -142,6 +151,11 @@ typedef NS_ENUM(NSUInteger, RLMSwiftPropertyKind) {
 
 + (instancetype)metadataForNilLiteralOptionalProperty:(NSString *)propertyName;
 
+@end
+
+@interface RLMManagedPropertyAccessor : NSObject
++ (id)getAtPointer:(void *)ptr;
++ (void)setAtPointer:(void *)ptr value:(id)value;
 @end
 
 NS_ASSUME_NONNULL_END

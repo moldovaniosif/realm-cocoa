@@ -32,5 +32,8 @@ FOUNDATION_EXTERN void RLMSetOptional(RLMOptionalBase *, id _Nullable);
 
 void RLMInitializeManagedOptional(RLMOptionalBase *, RLMObjectBase *parent, RLMProperty *prop);
 void RLMInitializeUnmanagedOptional(RLMOptionalBase *, RLMObjectBase *parent, RLMProperty *prop);
+FOUNDATION_EXTERN int RLMGetSwiftProperty(RLMObjectBase *, uint16_t);
+FOUNDATION_EXTERN void RLMSetSwiftProperty(RLMObjectBase *, uint16_t, int);
+FOUNDATION_EXTERN void RLMInitSwiftProperty(RLMOptionalBase *obj, RLMProperty *prop);
 
 NS_ASSUME_NONNULL_END

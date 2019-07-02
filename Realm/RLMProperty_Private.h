@@ -72,6 +72,13 @@ static inline NSString *RLMTypeToString(RLMPropertyType type) {
                                  property:(objc_property_t)property
                                  instance:(RLMObjectBase *)objectInstance;
 
+- (instancetype)initSwiftPropertyWithName:(NSString *)name
+                                  indexed:(BOOL)indexed
+                                     type:(RLMPropertyType)type
+                                 optional:(BOOL)optional
+                                className:(nullable NSString *)className
+                                     ivar:(Ivar)ivar;
+
 - (instancetype)initSwiftListPropertyWithName:(NSString *)name
                                      instance:(id)object;
 
@@ -97,6 +104,7 @@ static inline NSString *RLMTypeToString(RLMPropertyType type) {
 @property (nonatomic, assign) NSUInteger index;
 @property (nonatomic, assign) BOOL isPrimary;
 @property (nonatomic, assign) Ivar swiftIvar;
+@property (nonatomic, assign) Class swiftAccessor;
 
 // getter and setter names
 @property (nonatomic, copy) NSString *getterName;

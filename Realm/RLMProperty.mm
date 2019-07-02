@@ -476,6 +476,28 @@ static realm::util::Optional<RLMPropertyType> typeFromProtocolString(const char 
     return self;
 }
 
+- (instancetype)initSwiftPropertyWithName:(NSString *)name
+                                  indexed:(BOOL)indexed
+                                     type:(RLMPropertyType)type
+                                 optional:(BOOL)optional
+                                className:(nullable NSString *)className
+                                     ivar:(Ivar)ivar
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _name = name;
+    _indexed = indexed;
+    _type = type;
+    _optional = optional;
+    _swiftIvar = ivar;
+    _objectClassName = className;
+
+    return self;
+}
+
 - (instancetype)initWithName:(NSString *)name
                      indexed:(BOOL)indexed
       linkPropertyDescriptor:(RLMPropertyDescriptor *)linkPropertyDescriptor
