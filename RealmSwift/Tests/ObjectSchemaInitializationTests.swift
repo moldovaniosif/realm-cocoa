@@ -18,6 +18,7 @@
 
 import XCTest
 import RealmSwift
+import Realm.Private
 import Realm.Dynamic
 import Foundation
 
@@ -218,13 +219,8 @@ class ObjectSchemaInitializationTests: TestCase {
     }
 }
 
-class SwiftFakeObject: NSObject {
-    @objc class func objectUtilClass(_ isSwift: Bool) -> AnyClass { return ObjectUtil.self }
-    @objc class func primaryKey() -> String? { return nil }
-    @objc class func ignoredProperties() -> [String] { return [] }
-    @objc class func indexedProperties() -> [String] { return [] }
-    @objc class func _realmObjectName() -> String? { return nil }
-    @objc class func _realmColumnNames() -> [String: String]? { return nil }
+class SwiftFakeObject: Object {
+    override class func _ignoreClass() -> Bool { return true }
 }
 
 class SwiftObjectWithNSURL: SwiftFakeObject {

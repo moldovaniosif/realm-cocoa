@@ -216,6 +216,10 @@
     return @[];
 }
 
++ (bool)_ignoreClass {
+    return false;
+}
+
 @end
 
 @implementation RLMDynamicObject
