@@ -273,7 +273,6 @@ class KVOTests: TestCase {
         let date = Date(timeIntervalSince1970: 1)
         observeChange(obs, \.dateCol, Date(timeIntervalSince1970: 0), date) { obj.dateCol = date }
 
-#if swift(>=3.4) && (swift(>=4.1.50) || !swift(>=4))
         observeChange(obs, \.objectCol, nil, obj) { obj.objectCol = obj }
 
         observeChange(obs, \.optStringCol, nil, "abc") { obj.optStringCol = "abc" }
@@ -283,7 +282,6 @@ class KVOTests: TestCase {
         observeChange(obs, \.optStringCol, "abc", nil) { obj.optStringCol = nil }
         observeChange(obs, \.optBinaryCol, data, nil) { obj.optBinaryCol = nil }
         observeChange(obs, \.optDateCol, date, nil) { obj.optDateCol = nil }
-#endif
 
         if obs.realm == nil {
             return
